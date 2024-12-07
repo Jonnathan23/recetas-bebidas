@@ -5,13 +5,14 @@ import { useAppStore } from "../stores/useAppStore";
 export default function Header() {
     const { pathname } = useLocation();
 
+    const [searchFilter, setSearchFilter] = useState({ ingredient: '', category: '' })
+    const { fetchCategories, categories, searchRecipies, showNotification } = useAppStore()
+
+
     const isHome = useMemo(() => pathname === '/', [pathname]);
 
-    const { fetchCategories, categories, searchRecipies } = useAppStore()
-
-    const [searchFilter, setSearchFilter] = useState({ ingredient: '', category: '' })
-
     useEffect(() => { fetchCategories() }, [])
+
 
     const handleChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
         setSearchFilter({
@@ -23,9 +24,8 @@ export default function Header() {
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        //TODO: Validar
-        if(Object.values(searchFilter).includes('')){
-            console.log('Todos los campos son obligatorios')
+        if (Object.values(searchFilter).includes('')) {
+            showNotification({ text: 'Todos los campos son obligatorios', error: true })
             return
         }
 
